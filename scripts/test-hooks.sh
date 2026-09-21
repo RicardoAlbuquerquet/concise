@@ -618,6 +618,12 @@ for n in $(sed 's/#.*//' "$REPO"/evals/sets/*.txt | tr -d '\r' | grep -o '[0-9][
   ls "$REPO"/evals/cases/"$n"-*.md >/dev/null 2>&1 || faltando="$faltando $n"
 done
 [ -z "$faltando" ] && ok "todo numero em evals/sets/ tem caso" || ko "numeros sem caso em evals/sets/:$faltando"
+# os casos de comando so fazem sentido com o plugin: sem ele, o prompt e um comando desconhecido
+out=$(cd "$REPO" && CASES=commands bash evals/run.sh 2>&1); rc=$?
+[ "$rc" = 2 ] && case "$out" in *"needs PLUGIN=1"*) true;; *) false;; esac && { pass=$((pass+1)); echo "ok    CASES=commands recusa rodar sem o plugin"; } || { fail=$((fail+1)); echo "FALHA CASES=commands sem plugin: rc=$rc $out"; }
+n=$(ls "$REPO/evals/commands/"*.md 2>/dev/null | wc -l | tr -d ' ')
+bad=$(for f in "$REPO/evals/commands/"*.md; do awk '/^## Prompt/{getline; while ($0=="") getline; print; exit}' "$f" | grep -qE '^/concise:[a-z]+' || basename "$f"; done)
+[ "$n" -ge 6 ] && [ -z "$bad" ] && { pass=$((pass+1)); echo "ok    casos de comando abrem com /concise:"; } || { fail=$((fail+1)); echo "FALHA casos de comando: n=$n sem comando: $bad"; }
 
 echo "===== $pass ok, $fail falhas"
 [ "$fail" -eq 0 ]

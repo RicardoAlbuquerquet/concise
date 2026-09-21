@@ -34,6 +34,7 @@ the long form works:
 | `COMPARE=evals/baseline/claude-opus-5.tsv` | better, same or worse per case against a saved run, each case stopping once its verdict is settled; exits 1 when one got worse |
 | `WORSE_ONLY=1` | with `COMPARE`, only whether a case got worse; skips the cases whose saved side passes under 40% |
 | `SET=core` | the cases listed in `evals/sets/core.txt` — the daily ten |
+| `CASES=commands` | the six cases in `evals/commands/`, whose prompt is a plugin command such as `/concise:pr`; needs `PLUGIN=1` |
 | `RESULTS=file` | saves passes and runs per case; cases that didn't run keep their line |
 | `CLAUDE_BIN=./stub` | swaps the CLI — how the harness itself is tested, free |
 
