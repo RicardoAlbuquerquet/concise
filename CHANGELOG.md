@@ -5,6 +5,21 @@ propagates a release: the self-update hook and `claude plugin update` both
 compare versions, so a change without a bump reaches nobody — and a bump
 without an entry tells nobody what it brought.
 
+## 1.90.0 — 2026-09-21
+
+Comentário e mensagem ficam mais curtos e passam a soar como alguém escreveu
+para alguém, e não como um relatório.
+
+- **Uma ou duas frases, abaixo de 40 palavras.** Três linhas continuam sendo o
+  teto, e o comando faz uma segunda passada só para cortar.
+- **Voz de mensagem**: frases comuns, "você" e "a gente", no idioma da thread,
+  abrindo na afirmação e fechando no pedido. Rótulos como `Issue:` e
+  `Fix:`, negrito, listas e títulos ficam para documento.
+- **Se bloqueia, dito em palavras comuns** dentro da frase, como "precisa mudar
+  antes do merge".
+- A referência traz um par de exemplos, voz de relatório contra voz de
+  mensagem, e o lembrete de cada turno leva a mesma regra.
+
 ## 1.89.0 — 2026-09-15
 
 O guarda de crédito passa a conferir o commit como o git o guardou, na hora do

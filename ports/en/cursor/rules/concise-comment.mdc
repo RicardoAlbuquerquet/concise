@@ -7,54 +7,69 @@ alwaysApply: false
 
 ## Beliefs
 
-* Comments and replies are read mid-task and without this conversation.
-* File and line references make feedback actionable.
-* Threads are temporary; permanent context belongs in the card, PR, or linked document.
-* State the request plainly, apart from any praise.
+* A comment is a message from one person to another, read mid-task and
+  without this conversation.
+* The shorter it is, the sooner it gets acted on: one sentence gets read in
+  full, three lines get skimmed, a paragraph waits for later.
+* A file and line reference is what turns feedback into an action.
+* A thread is temporary; lasting context belongs in the card, the PR or a
+  linked document.
 
 ## Desires
 
-* The reader sees **the claim, the evidence, and the required action** immediately.
+* The reader sees **the claim, the evidence and what to do** in one glance,
+  and it sounds like a teammate wrote it.
 
 ## Intentions
 
-### Content
+### Length
 
-* **State the claim, then the evidence.**
+* **One or two sentences, under 40 words.** Three lines is the ceiling, and a
+  comment that needs more is a card or a PR note.
+* **One comment, one point**, so it can be resolved on its own.
+* Keep the single piece of evidence that proves the claim, and the exact value
+  it hangs on; the rest of the reasoning goes to the card or the PR.
 
-Example:
+### Voice
 
-`This drops the retry on 401 (api/src/auth/retry.ts:88), so a wrong password locks the account after three tries.`
+* Write it as you would type it to the person: plain sentences, "you" and "we",
+  in the language of the thread.
+* Open on the claim and close on the ask. The claim carries its evidence in the
+  same sentence when it fits.
+* Say whether it blocks in plain words — "needs to change before merge", "not
+  blocking" — inside the sentence.
+* Plain text only: one paragraph, with labels like `Issue:` or `Fix:`, bold,
+  bullets and headers left for documents.
+* Put a one-line fix as the line itself, in a suggestion block or inline code.
 
-* Keep comments to **≤3 lines**; one line is preferred.
-* Use plain text. Move complex explanations to the PR, card, or document.
-* Add only what is new to the thread.
-* **One comment, one point** so it can be resolved independently.
+Report voice:
+
+`**Issue:** The retry logic on line 88 has been modified. **Impact:** Users may get locked out. **Suggestion:** Consider restoring the previous behavior.`
+
+Message voice:
+
+`This drops the retry on 401 (api/src/auth/retry.ts:88), so a wrong password locks the account after three tries — needs to go back before merge.`
 
 ### Uncertainty
 
-When unsure, state what would change the conclusion.
-
-Prefer:
+When unsure, name what would change the conclusion:
 
 `Unless another caller handles this case.`
 
-Avoid vague hedging such as:
-
-`Maybe consider possibly...`
-
 ### Tone
 
-* Praise only when it identifies a specific useful decision.
-* Remove greetings, sign-offs, generic praise, and filler such as `thanks in advance` or `let me know`.
+* Praise only a specific decision, and in a message of its own.
+* The comment starts on the claim and ends on the ask; greetings, sign-offs and
+  filler such as `thanks in advance` or `let me know` stay out.
+* Add only what is new to the thread.
+
+### Replies
+
+* Answer in the first sentence: "You're right, fixed in `a1b2c3d`" is the whole
+  reply.
 
 ### Card notes
 
-A card comment should contain only:
-
-* what changed since the card was written; or
-* what the reader must do next;
-
-with the relevant reference.
-
-If the update needs multiple paragraphs, update the card body instead.
+A card comment carries only what changed since the card was written, or what
+the reader must do next, with the reference. When it needs more than one
+paragraph, update the card body instead.

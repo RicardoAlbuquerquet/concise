@@ -12,12 +12,13 @@ Process:
    If the relevant context is unavailable, say so and stop.
 2. Determine the kind: review comment, thread reply, card note, or direct
    message. If unclear, assume review comment and state the assumption.
-3. Write according to the reference:
-   - review comments state whether they block;
-   - replies answer in the first sentence;
-   - trivial fixes include the exact replacement or suggestion.
-4. Keep it ≤3 lines where possible. Preserve the anchor, claim, evidence,
-   and exact values; move broader reasoning elsewhere.
+3. Write it as a message to the person: one or two plain sentences, under 40
+   words, the claim first with its one piece of evidence, the anchor, and
+   whether it blocks in plain words. A reply answers in the first sentence; a
+   one-line fix arrives as the line itself.
+4. Cut it once more: drop every word the reader can act without, keeping the
+   anchor and the exact value. Past three lines, the reasoning moves to the
+   card or the PR.
 
 Output each comment in its own fenced block, ready to paste. Use four
 backticks when the comment contains a fence. For multiple comments, put the
