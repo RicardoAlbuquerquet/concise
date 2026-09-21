@@ -7,6 +7,7 @@
 #   ONLY=03 bash evals/run.sh                  # one case, by number or filename fragment
 #   ONLY=10,18,26 bash evals/run.sh            # several — the cases a rule change touches
 #   SET=core bash evals/run.sh                 # a named list in evals/sets/ — core is the daily ten
+#   CASES=commands PLUGIN=1 bash evals/run.sh  # the cases that invoke /concise:pr and the rest
 #   CLAUDE_BIN=./stub bash evals/run.sh        # swap the CLI (used in testing)
 #   CORE=1 bash evals/run.sh                   # judge the always-on core, not the skill
 #   STYLE_FILE=ports/en/AGENTS.md bash evals/run.sh   # judge one port's own text
@@ -31,6 +32,15 @@ MIN_RUNS="${MIN_RUNS:-$RUNS}"
 [ -z "${COMPARE:-}" ] || [ -f "$COMPARE" ] || { echo "no such saved run: $COMPARE" >&2; exit 2; }
 [ -z "${WORSE_ONLY:-}" ] || [ -n "${COMPARE:-}" ] || {
   echo "WORSE_ONLY=1 needs COMPARE: it asks whether a case got worse than a saved run" >&2; exit 2; }
+
+# CASES names the folder under evals/. The command cases open with
+# /concise:commit and its siblings, which exist only with the plugin loaded:
+# with no style, the prompt is an unknown command and every rubric fails.
+CASES="${CASES:-cases}"
+[ -d "$ROOT/evals/$CASES" ] || { echo "no such case folder: evals/$CASES" >&2; exit 2; }
+if [ "$CASES" = commands ] && [ -z "${PLUGIN:-}" ] && [ -z "${CLAUDE_BIN:-}" ]; then
+  echo "CASES=commands needs PLUGIN=1: the prompts are plugin commands" >&2; exit 2
+fi
 
 # SET names a list of case numbers in evals/sets/, one per line, # for notes.
 # It becomes ONLY, so the two can't both be given.
@@ -268,7 +278,7 @@ matches () {
   return 1
 }
 selected="" skipped=0
-for case_file in "$ROOT"/evals/cases/*.md; do
+for case_file in "$ROOT/evals/$CASES"/*.md; do
   name=$(basename "$case_file" .md)
   matches "$name" || continue
   # Worse takes a drop of 40 points, so a case whose saved side passes under
