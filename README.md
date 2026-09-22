@@ -302,7 +302,7 @@ transformations. Four of them come out longer.
 | | `/concise:audit` | runs the audit agent on a draft, a file, or a PR body and relays the report |
 | | `audit` agent | returns only the violations in a draft — quote, rule, fix |
 | **Guards** | credit guard | `PreToolUse` hook that denies `git commit` / `gh pr create` carrying AI credit |
-| | PR route hint | `PreToolUse` hook that stops the session's first `gh pr create` to point at `/concise:pr`; repeat the call to go ahead |
+| | route hint | `PreToolUse` hook that stops the session's first `git commit`, first comment and first `gh pr create` to point at the command that writes each; repeat the call to go ahead |
 | | [`extras/stop-audit`](extras/stop-audit/README.md) | opt-in per-turn style judge, installed by hand |
 
 The skill is the product; everything else keeps it applied — in every session,
@@ -517,15 +517,17 @@ file the call reads the message from — `-F`, `--body-file`, `$(cat file)` or
 `Get-Content file`, quoted or not. It names Claude, Copilot,
 Gemini, Cursor, Codex and the `anthropic.com` trailer address.
 
-**A second `PreToolUse` hook routes PR descriptions through the command that
-writes them.** The first `gh pr create` — or `gh pr edit --body` — of a session
-is denied once, with a reason naming `/concise:pr`; repeat the call and it goes
-through, and a session that already ran `/concise:pr` goes through at once. A
-description written from memory when a command was there to read the diff, the
-log and the template is the failure it exists for, and a hook that kept denying
-would be a wall the session could not leave. It cannot see a PR
-opened in the browser — nothing in a plugin can — so a repo whose PRs are opened
-on github.com puts the line in its own `PULL_REQUEST_TEMPLATE` instead.
+**A second `PreToolUse` hook routes what gets published through the command
+that writes it.** The session's first `git commit`, its first `gh pr comment`
+or `gh issue comment`, and its first `gh pr create` or `gh pr edit --body` are
+each denied once, with a reason naming `/concise:commit`, `/concise:comment` or
+`/concise:pr`; repeat the call and it goes through, and a session that already
+ran the command goes through at once. A message written from memory when a
+command was there to read the staged diff, the line or the template is the
+failure it exists for, and a hook that kept denying would be a wall the session
+could not leave. It cannot see a PR opened in the browser — nothing in a plugin
+can — so a repo whose PRs are opened on github.com puts the line in its own
+`PULL_REQUEST_TEMPLATE` instead.
 
 Everything around the style switches off on its own, without touching it — a
 deterministic guard has false positives, and writing *about* the rule trips it,
@@ -535,7 +537,7 @@ as this repo found out:
 |---|---|---|
 | the turn reminder | `export CONCISE_NO_TURN_REMINDER=1` | `touch ~/.claude/.concise-no-turn-reminder` |
 | the credit guard | `export CONCISE_ALLOW_CREDIT=1` | `touch ~/.claude/.concise-no-credit-guard` |
-| the PR route hint | `export CONCISE_NO_ROUTE_HINT=1` | `touch ~/.claude/.concise-no-route-hint` |
+| the route hint | `export CONCISE_NO_ROUTE_HINT=1` | `touch ~/.claude/.concise-no-route-hint` |
 | the self-update | — | `touch ~/.claude/.concise-no-self-update` |
 
 There is also an **opt-in Stop auditor** in
@@ -571,7 +573,7 @@ compression written by hand, and the tools that read a whole file get the whole
 file. The source stays single: `skills/`, and `bash scripts/build-ports.sh`.
 
 What stays behind is the Claude Code machinery — the forced output style, the
-turn reminder, the credit guard, the PR route hint, the daily self-update and
+turn reminder, the credit guard, the route hint, the daily self-update and
 the `audit` subagent. [`ports/README.md`](ports/README.md) carries the copy
 commands and what replaces each of them.
 

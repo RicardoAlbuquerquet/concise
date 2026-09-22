@@ -5,6 +5,22 @@ propagates a release: the self-update hook and `claude plugin update` both
 compare versions, so a change without a bump reaches nobody — and a bump
 without an entry tells nobody what it brought.
 
+## 1.92.0 — 2026-09-22
+
+O commit e o comentário passam a ser barrados uma vez por sessão, como a PR já
+era, com o comando que escreve cada um no motivo.
+
+- **Primeiro `git commit` da sessão:** barrado uma vez, apontando o
+  `/concise:commit`. Repetir a chamada passa.
+- **Primeiro comentário da sessão:** o mesmo, apontando o `/concise:comment`,
+  em `gh pr comment`, `gh issue comment` e `gh pr review --body`.
+- **Uma negativa por comando.** Gastar a do commit não cala a da PR na mesma
+  sessão.
+- **A sessão que já rodou o comando passa direto**, como já valia para a PR.
+- Dez testes novos, e sete deles falham no código anterior.
+- **Não alcança** o que é publicado pelo navegador: o hook só vê chamada de
+  ferramenta.
+
 ## 1.91.0 — 2026-09-22
 
 O comentário de review sai em frases curtas e com as palavras de quem usa o

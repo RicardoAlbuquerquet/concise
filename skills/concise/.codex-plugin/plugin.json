@@ -1,6 +1,6 @@
 {
   "name": "concise",
-  "version": "1.91.0",
+  "version": "1.92.0",
   "description": "English. The answer goes in the first sentence; cut preamble and process narration; keep every caveat that changes what the reader does. Under Codex it loads the core at session start, restates the style beside every prompt with the rule of the artifact being written, and denies a commit, PR, issue, card or file that would carry AI credit.",
   "author": {
     "name": "Ricardo Albuquerque",

@@ -45,7 +45,7 @@
           },
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/route-hint.sh\" \"The description this call publishes is what /concise:pr writes: it reads the diff, the repo log and the PR template, and it ends with the exact test step. Run /concise:pr first - the word create in the invocation opens the PR - or repeat this call to go ahead as is.\" .concise-no-route-hint",
+            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/route-hint.sh\" .concise-no-route-hint \"gh pr create|gh pr edit.*--body::concise:pr::The description this call publishes is what /concise:pr writes: it reads the diff, the repo log and the PR template, and it ends with the exact test step. Run /concise:pr first - the word create in the invocation opens the PR - or repeat this call to go ahead as is.\" \"gh (pr|issue) comment|gh pr review.*--body::concise:comment::The comment this call publishes is what /concise:comment writes: it reads the line or the thread first, and it keeps to one point in short plain sentences. Run /concise:comment first - naming the destination and saying to post sends it - or repeat this call to go ahead as is.\" \"git( -C [^ ]+)? commit::concise:commit::The message this call publishes is what /concise:commit writes: it reads the staged diff and the shape the repo log uses. Run /concise:commit first - the word run commits it - or repeat this call to go ahead as is.\"",
             "timeout": 10
           }
         ]
@@ -60,7 +60,7 @@
           },
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/route-hint.sh\" \"The description this call publishes is what /concise:pr writes: it reads the diff, the repo log and the PR template, and it ends with the exact test step. Run /concise:pr first - the word create in the invocation opens the PR - or repeat this call to go ahead as is.\" .concise-no-route-hint",
+            "command": "bash \"$CLAUDE_PLUGIN_ROOT/hooks/route-hint.sh\" .concise-no-route-hint \"gh pr create|gh pr edit.*--body::concise:pr::The description this call publishes is what /concise:pr writes: it reads the diff, the repo log and the PR template, and it ends with the exact test step. Run /concise:pr first - the word create in the invocation opens the PR - or repeat this call to go ahead as is.\" \"gh (pr|issue) comment|gh pr review.*--body::concise:comment::The comment this call publishes is what /concise:comment writes: it reads the line or the thread first, and it keeps to one point in short plain sentences. Run /concise:comment first - naming the destination and saying to post sends it - or repeat this call to go ahead as is.\" \"git( -C [^ ]+)? commit::concise:commit::The message this call publishes is what /concise:commit writes: it reads the staged diff and the shape the repo log uses. Run /concise:commit first - the word run commits it - or repeat this call to go ahead as is.\"",
             "timeout": 10
           }
         ]
