@@ -5,6 +5,23 @@ propagates a release: the self-update hook and `claude plugin update` both
 compare versions, so a change without a bump reaches nobody — and a bump
 without an entry tells nobody what it brought.
 
+## 1.91.0 — 2026-09-22
+
+O comentário de review sai em frases curtas e com as palavras de quem usa o
+sistema, e leva só o que bloqueia o merge.
+
+- **Frases curtas, uma ideia cada**, cerca de 40 palavras no total. Antes
+  eram uma ou duas frases longas, cheias de ressalvas.
+- **A segunda review abre com o que a primeira pediu:** "Os 3 pontos
+  anteriores estão corrigidos. Falta um que bloqueia o merge."
+- **O problema vem como quem usa vê**, com a causa depois de "porque", e o
+  código é chamado pelo que faz: "esta busca", e não o nome da função.
+- **O caminho do arquivo vai acima do comentário**, como o lugar de postar, e
+  sai do meio da frase.
+- **O que não bloqueia vai num comentário próprio, na linha dele.** O que o
+  revisor rodou vai na resposta para o usuário, e não no comentário.
+- **Não medido:** os evals não rodaram.
+
 ## 1.90.0 — 2026-09-21
 
 Comentário e mensagem ficam mais curtos e passam a soar como alguém escreveu

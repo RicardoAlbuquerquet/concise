@@ -24,18 +24,29 @@ alwaysApply: false
 
 ### Length
 
-* **One or two sentences, under 40 words.** Three lines is the ceiling, and a
-  comment that needs more is a card or a PR note.
-* **One comment, one point**, so it can be resolved on its own.
+* **Short sentences, one idea each, about 40 words in all.** Three lines is
+  the ceiling, and a comment that needs more is a card or a PR note.
+* **One comment, one point**, so it can be resolved on its own. A review
+  message carries what blocks the merge; each point that does not block goes
+  in a comment of its own, on its line.
 * Keep the single piece of evidence that proves the claim, and the exact value
-  it hangs on; the rest of the reasoning goes to the card or the PR.
+  it hangs on. How the bug got there, and which PR brought it, go to the card
+  or the PR.
+* What you ran while reviewing goes in your reply to the user, and the comment
+  keeps to what the author acts on.
 
 ### Voice
 
 * Write it as you would type it to the person: plain sentences, "you" and "we",
   in the language of the thread.
-* Open on the claim and close on the ask. The claim carries its evidence in the
-  same sentence when it fits.
+* **A second review opens with what the last one asked**: "The 3 earlier
+  points are fixed. One more blocks the merge."
+* Open on the claim and close on the ask. The claim is what the user of the app
+  sees — "the list still shows expired coupons", where "the query ignores the
+  expiry window" makes the author translate — and its cause follows in the
+  same sentence, after "because".
+* Name the code by what it does. The comment sits on its line, so "this
+  search" says it, and the anchor goes above the comment as where to post it.
 * Say whether it blocks in plain words — "needs to change before merge", "not
   blocking" — inside the sentence.
 * Plain text only: one paragraph, with labels like `Issue:` or `Fix:`, bold,
@@ -46,9 +57,9 @@ Report voice:
 
 `**Issue:** The retry logic on line 88 has been modified. **Impact:** Users may get locked out. **Suggestion:** Consider restoring the previous behavior.`
 
-Message voice:
+Message voice, posted on `api/src/auth/retry.ts:88`:
 
-`This drops the retry on 401 (api/src/auth/retry.ts:88), so a wrong password locks the account after three tries — needs to go back before merge.`
+`The 2 earlier points are fixed. One more blocks the merge. A wrong password now locks the account after three tries, because this retry skips the 401. It needs to go back before merge.`
 
 ### Uncertainty
 

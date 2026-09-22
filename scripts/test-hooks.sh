@@ -515,7 +515,7 @@ for port in concise; do
   # regra do desenho e a do comentario duas vezes no mesmo turno.
   out=$(printf '%s' '{"prompt":"desenhe o diagrama, faz o review do commit e abre a PR"}' | HOME="$FH" CLAUDE_PLUGIN_ROOT="$REPO/skills/$port" bash -c "$cmd" 2>/dev/null)
   dup=""
-  for r in "no line past 72" "the anchor path in full" "three sections under headers" "six lines at most"; do
+  for r in "no line past 72" "anchor path above the comment" "three sections under headers" "six lines at most"; do
     n=$(printf '%s' "$out" | grep -o "$r" | wc -l | tr -d ' ')
     [ "$n" = 1 ] || dup="$dup [$r]=$n"
   done
