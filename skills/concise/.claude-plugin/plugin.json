@@ -1,7 +1,7 @@
 {
   "name": "concise",
   "description": "English. The answer goes in the first sentence; cut preamble and process narration; keep every caveat that changes what the reader does. Governs chat replies, plans, decisions, commit messages, PR descriptions, cards, review comments and release notes — and the text written into code, from comments to screens. Forces its output style on while enabled, restates the style beside every prompt, and ships a SessionStart hook with self-update, a credit guard on the commands that publish text, fourteen commands — rewrite, pr, card, commit, comment, release, plan, decide, draw, status, handoff, audit, trim, woman — and an audit agent.",
-  "version": "1.91.0",
+  "version": "1.92.0",
   "author": {
     "name": "Ricardo Albuquerque",
     "url": "https://github.com/RicardoAlbuquerquet"

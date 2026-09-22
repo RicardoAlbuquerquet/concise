@@ -376,9 +376,13 @@ echo "--- route-hint: a PR passa pelo comando que a escreve"
 # hook viraria parede: a sessao nao teria como abrir PR nenhuma.
 R="$REPO/skills/concise/hooks/route-hint.sh"
 RT="$FH/rt"; mkdir -p "$RT"
-r () { # nome, esperado(deny|allow), stdin
-  out=$(printf '%s' "$3" | HOME="$FH" TMPDIR="$RT" bash "$R" "MOTIVO" .concise-no-route-hint)
+RPR='gh pr create|gh pr edit.*--body::concise:pr::MOTIVO PR'
+RCO='gh (pr|issue) comment|gh pr review.*--body::concise:comment::MOTIVO COMENTARIO'
+RCM='git( -C [^ ]+)? commit::concise:commit::MOTIVO COMMIT'
+r () { # nome, esperado(deny|allow|deny:PALAVRA), stdin
+  out=$(printf '%s' "$3" | HOME="$FH" TMPDIR="$RT" bash "$R" .concise-no-route-hint "$RPR" "$RCO" "$RCM")
   got=allow; case "$out" in *permissionDecision*) got=deny;; esac
+  case "$2" in deny:*) case "$out" in *"MOTIVO ${2#deny:}"*) got="$2";; esac;; esac
   if [ "$got" = "$2" ]; then pass=$((pass+1)); printf 'ok    %-46s %s\n' "$1" "$got"
   else fail=$((fail+1)); printf 'FALHA %-46s esperado=%s obtido=%s\n' "$1" "$2" "$got"; fi
 }
@@ -400,11 +404,24 @@ r "lista de skills no transcript avisa"  deny  "{\"session_id\":\"s10\",\"transc
 touch -t 202001010000 "$RT/concise-route-hint.velha"
 r "sessao nova ainda avisa"              deny  '{"session_id":"s11","command":"gh pr create --fill"}'
 [ -f "$RT/concise-route-hint.velha" ] && { fail=$((fail+1)); echo "FALHA marca de mais de um dia ficou"; } || { pass=$((pass+1)); echo "ok    marca de mais de um dia sai"; }
-[ -f "$RT/concise-route-hint.s11" ] && { pass=$((pass+1)); echo "ok    marca da sessao atual fica"; } || { fail=$((fail+1)); echo "FALHA marca da sessao atual sumiu"; }
+[ -f "$RT/concise-route-hint.s11.pr" ] && { pass=$((pass+1)); echo "ok    marca da sessao atual fica"; } || { fail=$((fail+1)); echo "FALHA marca da sessao atual sumiu"; }
+
+# O comentario e o commit passam pelo comando que os escreve, cada um com a
+# sua negativa: gastar a do commit nao pode calar a da PR na mesma sessao.
+r "gh pr comment manda o comentario"     deny:COMENTARIO '{"session_id":"s12","command":"gh pr comment 7 --body ok"}'
+r "gh issue comment tambem"              deny:COMENTARIO '{"session_id":"s13","command":"gh issue comment 7 --body ok"}'
+r "segundo comentario da sessao passa"   allow           '{"session_id":"s12","command":"gh pr comment 7 --body ok"}'
+r "git commit manda o commit"            deny:COMMIT     '{"session_id":"s12","command":"git commit -m x"}'
+r "a PR ainda avisa na mesma sessao"     deny:PR         '{"session_id":"s12","command":"gh pr create --fill"}'
+r "segundo commit da sessao passa"       allow           '{"session_id":"s12","command":"git add -A && git commit -m x"}'
+r "git status nao avisa"                 allow           '{"session_id":"s14","command":"git status --short"}'
+printf '%s\n' '{"type":"user","message":{"role":"user","content":"<command-name>/concise:commit</command-name>"}}' > "$RT/com-commit.jsonl"
+r "depois de /concise:commit passa"      allow           "{\"session_id\":\"s15\",\"transcript_path\":\"$RT/com-commit.jsonl\",\"command\":\"git commit -m x\"}"
+r "e a PR da mesma sessao ainda avisa"   deny:PR         "{\"session_id\":\"s15\",\"transcript_path\":\"$RT/com-commit.jsonl\",\"command\":\"gh pr create --fill\"}"
 touch "$FH/.claude/.concise-no-route-hint"
 r "opt-out pelo arquivo de flag"         allow '{"session_id":"s6","command":"gh pr create --fill"}'
 rm "$FH/.claude/.concise-no-route-hint"
-out=$(printf '%s' '{"session_id":"s7","command":"gh pr create --fill"}' | HOME="$FH" TMPDIR="$RT" CONCISE_NO_ROUTE_HINT=1 bash "$R" "M" .concise-no-route-hint)
+out=$(printf '%s' '{"session_id":"s7","command":"gh pr create --fill"}' | HOME="$FH" TMPDIR="$RT" CONCISE_NO_ROUTE_HINT=1 bash "$R" .concise-no-route-hint "$RPR")
 [ -z "$out" ] && { pass=$((pass+1)); echo "ok    opt-out pela variavel de ambiente"; } || { fail=$((fail+1)); echo "FALHA opt-out por variavel"; }
 
 echo "--- estilo forcado: output style e lembrete por turno"
