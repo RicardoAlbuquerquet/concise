@@ -443,10 +443,10 @@ the invocation itself:
   the word `run`: that commits exactly the drafted message and reports the
   short sha.
 - **`/concise:comment [subject]`** drafts a review comment, a reply in a
-  thread, a note on someone's card, or a message to a person: the claim
-  first, then the `path:line` that proves it, whether it blocks stated inside
-  the comment, and one point per comment — several points come back as
-  several blocks. It reads the line or the thread before writing, and stops
+  thread, a note on someone's card, or a message to a person, in short plain
+  sentences: the claim as the user of the app sees it, its cause, and whether
+  it blocks, with the `path:line` above the block as where it goes. One point
+  per comment — several points come back as several blocks. It reads the line or the thread before writing, and stops
   rather than guess when it can't. Draft only unless you name a destination
   *and* say to post.
 - **`/concise:release [version]`** drafts the changelog entry — and the
