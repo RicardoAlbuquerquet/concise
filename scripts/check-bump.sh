@@ -22,8 +22,8 @@ gt () {
   [ "${a3:-0}" -gt "${b3:-0}" ] 2>/dev/null
 }
 
-for dir in skills/concise; do
-  manifest="$dir/.claude-plugin/plugin.json"
+for manifest in skills/*/.claude-plugin/plugin.json; do
+  dir=${manifest%/.claude-plugin/plugin.json}
   changed=$(git diff --name-only "$BASE"...HEAD -- "$dir" | wc -l | tr -d ' ')
   old=$(git show "$BASE:$manifest" 2>/dev/null | version)
   new=$(version < "$manifest")

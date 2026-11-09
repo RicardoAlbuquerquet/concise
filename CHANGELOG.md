@@ -1,9 +1,21 @@
 # Changelog
 
-Every `version` bump of the plugin gets an entry here. The number is what
-propagates a release: the self-update hook and `claude plugin update` both
-compare versions, so a change without a bump reaches nobody — and a bump
-without an entry tells nobody what it brought.
+Every `version` bump of a plugin gets an entry here; a super-concise entry
+carries the plugin's name in its heading. The number is what propagates a
+release: the self-update hook and `claude plugin update` both compare
+versions, so a change without a bump reaches nobody — and a bump without an
+entry tells nobody what it brought.
+
+## super-concise 0.1.0 — 2026-11-09
+
+Nova skill, em plugin próprio: reduz qualquer texto a duas versões curtas dos mesmos fatos.
+
+- **Simples**, para quem não tem contexto: palavras do dia a dia, e o termo que não dá para evitar explicado na mesma frase.
+- **Técnico**, para especialista ou outra IA: nomes, valores, caminhos e comandos exatos.
+- **Ficou de fora:** uma linha com o que foi cortado.
+- O tamanho segue o texto de entrada, até 8 linhas por bloco.
+- Comando `/super-concise:reduce`. Kiro, Orca e skills.sh leem a pasta como está.
+- **Não medido:** os evals vêm na PR seguinte.
 
 ## 1.92.0 — 2026-09-22
 

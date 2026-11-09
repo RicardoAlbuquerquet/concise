@@ -2,11 +2,14 @@ name: release
 
 # A version bump on main is a release: tag it and publish the CHANGELOG
 # section, so watchers get notified and every version has a pinnable ref.
+# One job per plugin. The prefix keeps super-concise tags from colliding with
+# the concise `v*` tags.
 on:
   push:
     branches: [main]
     paths:
       - 'skills/concise/.claude-plugin/plugin.json'
+      - 'skills/super-concise/.claude-plugin/plugin.json'
 
 permissions:
   contents: write
@@ -14,6 +17,12 @@ permissions:
 jobs:
   tag:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {plugin: concise, prefix: v, heading: '', latest: 'true'}
+          - {plugin: super-concise, prefix: super-concise-v, heading: 'super-concise ', latest: 'false'}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -21,10 +30,10 @@ jobs:
 
       - id: version
         run: |
-          v=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' skills/concise/.claude-plugin/plugin.json)
+          v=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' skills/${{ matrix.plugin }}/.claude-plugin/plugin.json)
           echo "value=$v" >> "$GITHUB_OUTPUT"
-          if git rev-parse "v$v" >/dev/null 2>&1; then
-            echo "v$v already tagged — nothing to release"
+          if git rev-parse "${{ matrix.prefix }}$v" >/dev/null 2>&1; then
+            echo "${{ matrix.prefix }}$v already tagged — nothing to release"
             echo "fresh=no" >> "$GITHUB_OUTPUT"
           else
             echo "fresh=yes" >> "$GITHUB_OUTPUT"
@@ -34,14 +43,14 @@ jobs:
         name: Extract this version's changelog section
         run: |
           v='${{ steps.version.outputs.value }}'
-          awk -v v="$v" '
-            $0 ~ "^## " v " " {f=1; next}
+          awk -v h='${{ matrix.heading }}' -v v="$v" '
+            $0 ~ "^## " h v " " {f=1; next}
             f && /^## / {exit}
             f
           ' CHANGELOG.md > notes.md
           # An entry is required: a release with no notes tells nobody what it
           # brought, which is the rule the repo enforces on itself.
-          [ -s notes.md ] || { echo "no CHANGELOG section for $v" >&2; exit 1; }
+          [ -s notes.md ] || { echo "no CHANGELOG section for ${{ matrix.heading }}$v" >&2; exit 1; }
           cat notes.md
 
       - if: steps.version.outputs.fresh == 'yes'
@@ -49,6 +58,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           v='${{ steps.version.outputs.value }}'
-          git tag "v$v"
-          git push origin "v$v"
-          gh release create "v$v" --title "v$v" --notes-file notes.md
+          t="${{ matrix.prefix }}$v"
+          git tag "$t"
+          git push origin "$t"
+          gh release create "$t" --title "$t" --notes-file notes.md --latest=${{ matrix.latest }}
