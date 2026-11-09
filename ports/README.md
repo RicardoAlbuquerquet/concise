@@ -54,6 +54,47 @@ real Codex yet: it follows the Codex hook and plugin documentation, and the
 tests in `scripts/test-hooks.sh` only simulate it. On Windows, Codex may run a
 hook through a shell that leaves `$CLAUDE_PLUGIN_ROOT` unexpanded.
 
+## Kiro
+
+Kiro reads the open Agent Skills format, so it loads `skills/concise/` as it
+is. Copy the folder to `~/.kiro/skills/concise/` for every project, or to
+`.kiro/skills/concise/` for one workspace:
+
+```bash
+mkdir -p ~/.kiro/skills && cp -r skills/concise ~/.kiro/skills/
+```
+
+```powershell
+New-Item -ItemType Directory -Force $HOME\.kiro\skills | Out-Null; Copy-Item -Recurse skills\concise $HOME\.kiro\skills\
+```
+
+A custom agent loads only the skills it lists, so add this line to its
+`resources`:
+
+```
+skill://~/.kiro/skills/concise/SKILL.md
+```
+
+The skill fits Kiro's rules: `name` is `concise`, the same as the folder, and
+the `description` is under 1,024 characters. The `/concise:` commands in the
+table at the end of `SKILL.md` exist only in Claude Code; in Kiro the model
+reads the `references/` file named beside each one. The `hooks/`, `commands/`,
+`agents/` and `output-styles/` folders come along in the copy and stay unused.
+Not tested in Kiro: this follows its documentation.
+
+## Orca
+
+Orca has no skills folder of its own. It lists the skills of the agents it
+runs (Claude Code, Codex, `.agents/skills`), so a skill installed for one of
+them shows up there. To install it straight from this repository:
+
+```bash
+npx skills add RicardoAlbuquerquet/concise --skill concise --global
+```
+
+The command finds the skill at `skills/concise/SKILL.md`. Not tested in Orca:
+this follows its documentation.
+
 ## AGENTS.md
 
 Read by Copilot's coding agent, Zed, Gemini CLI, Windsurf, Aider, Jules
