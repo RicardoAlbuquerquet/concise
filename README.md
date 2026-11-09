@@ -583,6 +583,23 @@ The plugin ships in English and replies in the language you write in: the
 rules shape a reply, and a shape needs no translation. Installed by copy
 rather than as a plugin, it invokes unprefixed: `/concise`.
 
+## super-concise
+
+A second plugin in this marketplace. It takes any text — a thread, a PR, a
+log, a spec, an AI answer — and returns it twice, reduced: **Simple**, for a
+reader with no context, and **Technical**, for an expert or another AI. A
+last line names what was left out.
+
+```
+/plugin install super-concise@claude-skill-concise
+```
+
+Then `/super-concise:reduce <text or file path>`; with nothing after it, it
+reduces the previous reply. It ships no hooks, so it has no self-update:
+`claude plugin update super-concise@claude-skill-concise` moves it. The
+rules: [`skills/super-concise/SKILL.md`](skills/super-concise/SKILL.md).
+Kiro, Orca and the rest: [`ports/README.md`](ports/README.md#super-concise).
+
 ## Uninstall
 
 ```

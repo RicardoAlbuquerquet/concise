@@ -1,0 +1,9 @@
+{
+  "name": "super-concise",
+  "description": "English. Reduces any text — a thread, a PR, a log, a spec, an AI answer — to two short versions, Simple for a reader with no context and Technical for an expert or another AI. Keeps every fact that changes a decision and names what was left out. Ships the skill and one command, reduce.",
+  "version": "0.1.0",
+  "author": { "name": "Ricardo Albuquerque", "url": "https://github.com/RicardoAlbuquerquet" },
+  "homepage": "https://github.com/RicardoAlbuquerquet/concise",
+  "repository": "https://github.com/RicardoAlbuquerquet/concise",
+  "license": "MIT"
+}

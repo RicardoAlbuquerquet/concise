@@ -95,6 +95,30 @@ npx skills add RicardoAlbuquerquet/concise --skill concise --global
 The command finds the skill at `skills/concise/SKILL.md`. Not tested in Orca:
 this follows its documentation.
 
+## super-concise
+
+The second skill in this repository has no generated port: every tool that
+reads `SKILL.md` files loads `skills/super-concise/` as it is.
+
+Kiro, for every project:
+
+```bash
+mkdir -p ~/.kiro/skills && cp -r skills/super-concise ~/.kiro/skills/
+```
+
+A custom agent lists `skill://~/.kiro/skills/super-concise/SKILL.md` in its
+`resources`.
+
+Orca, Cursor and the other agents skills.sh supports:
+
+```bash
+npx skills add RicardoAlbuquerquet/concise --skill super-concise --global
+```
+
+`/super-concise:reduce` exists only in Claude Code. Elsewhere, ask for it by
+name: "super-concise this: …". Not tested in Kiro, Orca or Cursor: this
+follows their documentation.
+
 ## AGENTS.md
 
 Read by Copilot's coding agent, Zed, Gemini CLI, Windsurf, Aider, Jules

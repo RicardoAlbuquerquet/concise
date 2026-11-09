@@ -559,6 +559,34 @@ for port in concise; do
   [ "$linhas" -le 500 ] && ok "SKILL.md de $port com $linhas linhas" || ko "SKILL.md de $port passou de 500 linhas: $linhas"
 done
 
+echo "--- super-concise: skill portavel"
+# Kiro, Orca e skills.sh leem o SKILL.md como esta: chave fora do formato
+# aberto, nome diferente da pasta ou ': ' solto no YAML derrubam a skill calada.
+SC="$REPO/skills/super-concise"
+fm () { awk 'NR==1{next} /^---\r?$/{exit} {print}' "$SC/SKILL.md" | tr -d '\r'; }
+chaves=$(fm | sed -n 's/^\([a-z][a-z-]*\):.*/\1/p' | sort | tr '\n' ' ')
+[ "$chaves" = "compatibility description license metadata name " ] && ok "frontmatter de super-concise so com as chaves do formato aberto" || ko "frontmatter de super-concise com chaves: $chaves"
+[ "$(fm | sed -n 's/^name: *//p')" = super-concise ] && ok "name de super-concise igual a pasta" || ko "name de super-concise difere da pasta"
+n=$(fm | sed -n 's/^description: *//p' | perl -CSD -ne 'chomp; print length')
+[ "${n:-0}" -gt 0 ] && [ "$n" -le 300 ] && ok "description de super-concise com $n caracteres" || ko "description de super-concise com ${n:-0} caracteres (maximo 300)"
+fm | grep -qE '^(name|description|license|compatibility): .*: ' && ko "frontmatter de super-concise com ': ' sem aspas" || ok "frontmatter de super-concise sem ': ' solto"
+linhas=$(wc -l < "$SC/SKILL.md" | tr -d ' ')
+[ "$linhas" -le 200 ] && ok "SKILL.md de super-concise com $linhas linhas" || ko "SKILL.md de super-concise passou de 200 linhas: $linhas"
+faltando=""
+for ref in $(grep -oh 'references/[a-z-]*\.md' "$SC/SKILL.md" "$SC/commands/"*.md | sort -u); do [ -f "$SC/$ref" ] || faltando="$faltando $ref"; done
+for f in "$SC"/references/*.md; do grep -q "references/$(basename "$f")" "$SC/SKILL.md" || faltando="$faltando fora-da-skill:$(basename "$f")"; done
+[ -z "$faltando" ] && ok "referencias de super-concise existem e a skill cita todas" || ko "referencias de super-concise:$faltando"
+mkt=$(perl -MJSON::PP -e 'binmode STDOUT, ":utf8"; local $/; my $j = decode_json(<STDIN>); print map { $_->{description} } grep { $_->{name} eq "super-concise" } @{$j->{plugins}}' < "$REPO/.claude-plugin/marketplace.json")
+plg=$(perl -MJSON::PP -e 'binmode STDOUT, ":utf8"; local $/; print decode_json(<STDIN>)->{description}' < "$SC/.claude-plugin/plugin.json")
+[ -n "$mkt" ] && [ "$mkt" = "$plg" ] && ok "descricao do marketplace igual a do plugin super-concise" || ko "descricao do marketplace difere da do plugin super-concise"
+secoes=$(sed -n 's/^##* //p' "$SC/SKILL.md" | tr -d '\r')
+for f in "$SC/commands/"*.md; do
+  awk 'NR==1 { if ($0 != "---") exit 1; next } /^---$/ { closed=1; exit } /^description: .+/ { d=1 } END { exit !(d && closed) }' "$f" && ok "frontmatter de $(basename "$f") abre o arquivo" || ko "frontmatter ausente em $(basename "$f")"
+  grep -qF '${CLAUDE_PLUGIN_ROOT}/SKILL.md' "$f" && ok "$(basename "$f") le o SKILL.md" || ko "$(basename "$f") nao aponta o SKILL.md"
+  mortas=$(perl -CSD -0777 -ne 'while (/"([^"]+)"\s+section/g) { print "$1\n" }' "$f" | while read -r s; do printf '%s\n' "$secoes" | grep -qxF "$s" || printf ' "%s"' "$s"; done)
+  [ -z "$mortas" ] && ok "secoes citadas por $(basename "$f") existem" || ko "secao morta em $(basename "$f"):$mortas"
+done
+
 echo "--- harness dos evals (claude falso)"
 # O run.sh passou a rodar os casos em paralelo. Duas coisas que paralelismo
 # quebra calado: a ordem do relatorio e o abort quando o CLI morre.
